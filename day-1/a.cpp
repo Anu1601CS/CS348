@@ -1,13 +1,8 @@
 #include <bits/stdc++.h>
-#define SYNC                     \
-	ios::sync_with_stdio(false); \
-	cin.tie(NULL);               \
-	cout.tie(NULL);
-
 using namespace std;
 typedef pair<double, int> pdi;
 
-struct src
+struct source
 {
 	double sending_rate;
 	int bandwidth;
@@ -15,25 +10,27 @@ struct src
 
 int main()
 {
-	SYNC int num;
+	int num;
 	double tm;
 	cout<<"Enter the number of sources: ";
 	cin>>num;
-	cout<<"Enter sending rate(pkt/sec) and bandwidth(in bits) of each source: \n";
-	struct src tmp[num + 1];
+	cout<<"Enter sending rate and bandwidth of each source: \n";
+	struct source tmp[num + 1];
 	int i = 1;
 	int cnt[num + 1];
 	double sum[num + 1];
 
 	for (i = 1; i <= num; i++)
 		sum[i] = 0.0;
+
 	memset(cnt, 0, sizeof(cnt));
 
 	for (i = 1; i <= num; i++)
 	{
 		double x1;
 		int y1;
-		scanf("%lf%d", &x1, &y1);
+		cin>>x1>>y1;
+
 		tmp[i].sending_rate = x1;
 		tmp[i].bandwidth = y1;
 	}
@@ -42,10 +39,10 @@ int main()
 	int x1;
 	cin>>x1;
 	int sink_wid = x1;
-	cout<<"Enter packet size(in bits): ";
+	cout<<"Enter packet size: ";
 	int pkt;
 	cin>>pkt;
-	cout<<"Enter simulation time(in sec):\n";
+	cout<<"Enter simulation time:\n";
 	cin>>tm;
 
 	priority_queue<pdi, vector<pdi>, greater<pdi>> pq;
@@ -114,11 +111,13 @@ int main()
 		pq.pop();
 	}
 
-	cout<<"The average delay of the sources are (1 to n):\n";
+	cout<<"\nThe average delay of the sources:\n";
+	cout<<"\nSource\t:\tAverage Delay\n";
 
 	for (i = 1; i <= num; i++)
 	{
-		cout << i << ": " << sum[i] / cnt[i] << "\n";
+		cout <<i << "\t:\t" << sum[i] / cnt[i] << "\n";
 	}
+
 	return 0;
 }
