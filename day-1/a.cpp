@@ -1,3 +1,6 @@
+// Name : Anurag
+// Roll no: 1601CS05
+
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -8,11 +11,55 @@ class source
 	int bandwidth;
 };
 
+priority_queue<pair<double, int>, vector<pair<double, int>>, greater<pair<double, int>>> global_queue;
+
+void cal(double arr2[], int numSource, double snk_spd, int arr[])
+{
+
+	int tmp1 = 0, i;
+	double tmp2 = 0.0;
+	double src_tm = 0.0;
+
+	while (!global_queue.empty())
+	{
+		pair<double, int> p = global_queue.top();
+
+		if (tmp1 == 0)
+		{
+			arr2[p.second] += snk_spd;
+			tmp1 = snk_spd + p.first;
+		}
+		else
+		{
+			if (tmp2 <= p.first)
+			{
+				arr2[p.second] += snk_spd;
+				tmp2 = p.first;
+			}
+			else
+				arr2[p.second] += tmp2 + snk_spd - p.first;
+
+			tmp2 += snk_spd;
+		}
+
+		tmp1++;
+		src_tm = p.first;
+		global_queue.pop();
+	}
+
+	cout << "\nThe average delay of the sources:\n";
+	cout << "\nSource\t:\tAverage Delay\n";
+
+	for (i = 0; i < numSource; i++)
+	{
+		cout << i << "\t:\t" << arr2[i] / arr[i] << "\n";
+	}
+}
+
 int main()
 {
 	int numSource, i, j, a;
 	double stime;
-	priority_queue<pair<double, int>, vector<pair<double, int>>, greater<pair<double, int>>> global_queue;
 
 	cout << "Number of sources: ";
 	cin >> numSource;
@@ -25,7 +72,6 @@ int main()
 
 	for (i = 0; i < numSource; i++)
 		arr2[i] = 0.0;
-
 
 	cout << "Sending rate and bandwidth of each source: \n";
 	for (i = 0; i < numSource; i++)
@@ -78,44 +124,7 @@ int main()
 		}
 	}
 
-	tmp1 = 0;
-	double tmp2 = 0.0;
-	double src_tm = 0.0;
-
-	while (!global_queue.empty())
-	{
-		pair<double, int> p = global_queue.top();
-
-		if (tmp1 == 0)
-		{
-			arr2[p.second] += snk_spd;
-			tmp1 = snk_spd + p.first;
-		}
-		else
-		{
-			if (tmp2 <= p.first)
-			{
-				arr2[p.second] += snk_spd;
-				tmp2 = p.first;
-			}
-			else
-				arr2[p.second] += tmp2 + snk_spd - p.first;
-
-			tmp2 += snk_spd;
-		}
-
-		tmp1++;
-		src_tm = p.first;
-		global_queue.pop();
-	}
-
-	cout << "\nThe average delay of the sources:\n";
-	cout << "\nSource\t:\tAverage Delay\n";
-
-	for (i = 0; i < numSource; i++)
-	{
-		cout << i << "\t:\t" << arr2[i] / arr[i] << "\n";
-	}
+	cal(arr2, numSource, snk_spd, arr);
 
 	return 0;
 }
