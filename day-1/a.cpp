@@ -1,9 +1,9 @@
 #include <bits/stdc++.h>
 using namespace std;
-typedef pair<double, int> pdi;
 
-struct source
+class source
 {
+	public:
 	double sending_rate;
 	int bandwidth;
 };
@@ -12,108 +12,109 @@ int main()
 {
 	int numSource, i, j, a;
 	double stime;
-	cout<<"Enter the number of sources: ";
-	cin>>numSource;
-	cout<<"Enter sending rate and bandwidth of each source: \n";
-	struct source tmp[numSource + 1];
-	int arr[numSource + 1];
-	double arr2[numSource + 1];
+	priority_queue<pair<double, int>, vector<pair<double, int>>, greater<pair<double, int>>> global_queue;
 
-	for (i = 1; i <= numSource; i++)
+	cout << "Number of sources: ";
+	cin >> numSource;
+	source src[numSource];
+	int arr[numSource];
+	double arr2[numSource];
+
+	for (i = 0; i < numSource; i++)
 		arr2[i] = 0.0;
 
 	memset(arr, 0, sizeof(arr));
 
-	for (i = 1; i <= numSource; i++)
+	cout << "Sending rate and bandwidth of each source: \n";
+	for (i = 0; i < numSource; i++)
 	{
 		double a;
 		int b;
-		cin>>a>>b;
+		cin >> a >> b;
 
-		tmp[i].sending_rate = a;
-		tmp[i].bandwidth = b;
+		src[i].sending_rate = a;
+		src[i].bandwidth = b;
 	}
 
-	cout<<"Enter bandwidth of sink: ";
-	cin>>a;
+	cout << "Bandwidth of sink: ";
+	cin >> a;
 	int sink_wid = a;
-	cout<<"Enter packet size: ";
+	cout << "Packet size: ";
 	int pkt;
-	cin>>pkt;
-	cout<<"Enter simulation time: ";
-	cin>>stime;
+	cin >> pkt;
+	cout << "Simulation time: ";
+	cin >> stime;
 
-	priority_queue<pdi, vector<pdi>, greater<pdi>> pq;
-	double snk_sp = ((double)pkt) / ((double)sink_wid);
+	double snk_spd = ((double)pkt) / ((double)sink_wid);
 
-	for (i = 1; i <= numSource; i++)
+	for (i = 0; i < numSource; i++)
 	{
-		int k = stime * (double)tmp[i].sending_rate;
-		double sp = ((double)pkt) / ((double)tmp[i].bandwidth);
+		int k = stime * (double)src[i].sending_rate;
+		double src_spd = ((double)pkt) / ((double)src[i].bandwidth);
 		double c = 0.0;
-		double k1 = 1 / (tmp[i].sending_rate);
+		double k1 = 1 / (src[i].sending_rate);
 		arr[i] = k;
 
-		for (j = 1; j <= k; j++)
+		for (j = 0; j < k; j++)
 		{
-			if (j == 1)
+			if (j == 0)
 			{
-				pq.push(make_pair(sp + k1, i));
-				c = sp + k1;
-				arr2[i] += sp;
+				global_queue.push(make_pair(src_spd + k1, i));
+				c = src_spd + k1;
+				arr2[i] += src_spd;
 			}
 			else
 			{
 				if (c < (double)(j)*k1)
 					c = (double)(j)*k1;
 				else
-					arr2[i] += (abs(c - (double)(j) * (double)k1));
-				pq.push(make_pair(c + sp, i));
-				arr2[i] += sp;
-				c += sp;
+					arr2[i] += (c - (double)(j) * (double)k1);
+				global_queue.push(make_pair(c + src_spd, i));
+				arr2[i] += src_spd;
+				c += src_spd;
 			}
 		}
 	}
 
+	j = 0;
 	double c = 0.0;
-	j = 1;
-	double tmp_tm = 0.0;
+	double src_tm = 0.0;
 
-	while (!pq.empty())
+	while (!global_queue.empty())
 	{
-		pdi p = pq.top();
+		pair<double, int> p = global_queue.top();
 
-		if (j == 1)
+		if (j == 0)
 		{
-			arr2[p.second] += (snk_sp);
-			c = (snk_sp) + p.first;
+			arr2[p.second] += (snk_spd);
+			c = (snk_spd) + p.first;
 		}
 		else
 		{
 			if (p.first >= c)
 			{
-				arr2[p.second] += (snk_sp);
+				arr2[p.second] += (snk_spd);
 				c = p.first;
 			}
 			else
 			{
-				arr2[p.second] += (snk_sp + abs(c - p.first));
+				arr2[p.second] += (snk_spd + c - p.first);
 			}
 
-			c += snk_sp;
+			c += snk_spd;
 		}
 
-		tmp_tm = p.first;
 		j++;
-		pq.pop();
+		src_tm = p.first;
+		global_queue.pop();
 	}
 
-	cout<<"\nThe average delay of the sources:\n";
-	cout<<"\nSource\t:\tAverage Delay\n";
+	cout << "\nThe average delay of the sources:\n";
+	cout << "\nSource\t:\tAverage Delay\n";
 
-	for (i = 1; i <= numSource; i++)
+	for (i = 0; i < numSource; i++)
 	{
-		cout <<i << "\t:\t" << arr2[i] / arr[i] << "\n";
+		cout << i << "\t:\t" << arr2[i] / arr[i] << "\n";
 	}
 
 	return 0;
