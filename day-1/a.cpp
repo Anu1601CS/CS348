@@ -3,7 +3,7 @@ using namespace std;
 
 class source
 {
-	public:
+  public:
 	double sending_rate;
 	int bandwidth;
 };
@@ -17,13 +17,15 @@ int main()
 	cout << "Number of sources: ";
 	cin >> numSource;
 	source src[numSource];
+
 	int arr[numSource];
+	memset(arr, 0, sizeof(arr));
+
 	double arr2[numSource];
 
 	for (i = 0; i < numSource; i++)
 		arr2[i] = 0.0;
 
-	memset(arr, 0, sizeof(arr));
 
 	cout << "Sending rate and bandwidth of each source: \n";
 	for (i = 0; i < numSource; i++)
@@ -44,67 +46,65 @@ int main()
 	cin >> pkt;
 	cout << "Simulation time: ";
 	cin >> stime;
-
-	double snk_spd = ((double)pkt) / ((double)sink_wid);
+	int tmp1;
+	double snk_spd = (double)pkt / (double)sink_wid;
 
 	for (i = 0; i < numSource; i++)
 	{
 		int k = stime * (double)src[i].sending_rate;
-		double src_spd = ((double)pkt) / ((double)src[i].bandwidth);
-		double c = 0.0;
-		double k1 = 1 / (src[i].sending_rate);
+		double src_spd = (double)pkt / (double)src[i].bandwidth;
+		double tmp2 = 0.0;
+		double k1 = 1 / src[i].sending_rate;
 		arr[i] = k;
 
-		for (j = 0; j < k; j++)
+		for (tmp1 = 0; tmp1 < k; tmp1++)
 		{
-			if (j == 0)
+			if (tmp1 == 0)
 			{
 				global_queue.push(make_pair(src_spd + k1, i));
-				c = src_spd + k1;
+				tmp2 = src_spd + k1;
 				arr2[i] += src_spd;
 			}
 			else
 			{
-				if (c < (double)(j)*k1)
-					c = (double)(j)*k1;
+				if (k1 * (double)(tmp1) > tmp2)
+					tmp2 = k1 * (double)(tmp1);
 				else
-					arr2[i] += (c - (double)(j) * (double)k1);
-				global_queue.push(make_pair(c + src_spd, i));
+					arr2[i] += tmp2 - (double)(tmp1) * (double)k1;
+				global_queue.push(make_pair(tmp2 + src_spd, i));
+				tmp2 += src_spd;
 				arr2[i] += src_spd;
-				c += src_spd;
 			}
 		}
 	}
 
-	j = 0;
-	double c = 0.0;
+	tmp1 = 0;
+	double tmp2 = 0.0;
 	double src_tm = 0.0;
 
 	while (!global_queue.empty())
 	{
 		pair<double, int> p = global_queue.top();
 
-		if (j == 0)
+		if (tmp1 == 0)
 		{
-			arr2[p.second] += (snk_spd);
-			c = (snk_spd) + p.first;
+			arr2[p.second] += snk_spd;
+			tmp1 = snk_spd + p.first;
 		}
 		else
 		{
-			if (p.first >= c)
+			if (tmp2 <= p.first)
 			{
-				arr2[p.second] += (snk_spd);
-				c = p.first;
+				arr2[p.second] += snk_spd;
+				tmp2 = p.first;
 			}
 			else
-			{
-				arr2[p.second] += (snk_spd + c - p.first);
-			}
+				arr2[p.second] += tmp2 + snk_spd - p.first;
 
-			c += snk_spd;
+			tmp2 += snk_spd;
 		}
 
-		j++;
+		tmp1++;
 		src_tm = p.first;
 		global_queue.pop();
 	}
