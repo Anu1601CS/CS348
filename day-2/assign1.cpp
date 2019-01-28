@@ -81,48 +81,48 @@ int main()
 		for (i = 1; i <= num; i++)
 		{
 			double sp = ((double)packet) / ((double)tmp[i].bandwidth);
-			double x2 = 0.0;
-			double tm1 = 0.0;
+			double d = 0.0;
+			double tmp1 = 0.0;
 			srand((long)time(NULL));
 
-			for (; x2 < tm;)
+			for (; d < tm;)
 			{
-				if (x2 == 0.0)
+				if (d == 0.0)
 				{
 					global_queue.push(make_pair(make_pair(sp, sp), i));
-					x2 = sp;
+					d = sp;
 					sum[i] += sp;
 					count[i]++;
 				}
 				else
 				{
 					pair<pair<double, double>, int> p1 = global_queue.top();
-					if (x2 < tm1)
+					if (d < tmp1)
 					{
-						x2 = tm1;
-						global_queue.push(make_pair(make_pair(x2 + sp, sp), i));
+						d = tmp1;
+						global_queue.push(make_pair(make_pair(d + sp, sp), i));
 					}
 					else
 					{
-						sum[i] += (abs(x2 - tm1));
-						global_queue.push(make_pair(make_pair(x2 + sp, sp + x2 - tm1), i));
+						sum[i] += (abs(d - tmp1));
+						global_queue.push(make_pair(make_pair(d + sp, sp + d - tmp1), i));
 					}
 					sum[i] += sp;
-					x2 += sp;
+					d += sp;
 					count[i]++;
 				}
 
 				double r1 = rand() / (double)RAND_MAX;
-				tm1 += cal(tmp[i].sending_rate, r1);
+				tmp1 += cal(tmp[i].sending_rate, r1);
 			}
 		}
 
-		double x2 = 0.0;
+		double d = 0.0;
 		j = 1;
 		int sz = 100;
 
 		double tmp_tm = 0.0;
-		vector<pair<double, pair<double, int>>> v_ans;
+		vector<pair<double, pair<double, int>>> vec_ans;
 
 		while (!global_queue.empty())
 		{
@@ -132,37 +132,37 @@ int main()
 				if (p1.first.first + snk_spd <= tm)
 				{
 					sum[p1.second] += (snk_spd);
-					v_ans.push_back(make_pair(p1.first.first, make_pair(p1.first.first, p1.second)));
+					vec_ans.push_back(make_pair(p1.first.first, make_pair(p1.first.first, p1.second)));
 				}
 				else
 				{
 					sum[p1.second] -= p1.first.second;
 					count[p1.second]--;
 				}
-				x2 = (snk_spd) + p1.first.first;
+				d = (snk_spd) + p1.first.first;
 			}
 			else
 			{
-				if (p1.first.first >= x2)
+				if (p1.first.first >= d)
 				{
 					if (p1.first.first + snk_spd <= tm)
 					{
 						sum[p1.second] += (snk_spd);
-						v_ans.push_back(make_pair(p1.first.first, make_pair(p1.first.first, p1.second)));
+						vec_ans.push_back(make_pair(p1.first.first, make_pair(p1.first.first, p1.second)));
 					}
 					else
 					{
 						sum[p1.second] -= p1.first.second;
 						count[p1.second]--;
 					}
-					x2 = p1.first.first;
+					d = p1.first.first;
 				}
 				else
 				{
-					if (p1.first.first + snk_spd + abs(x2 - p1.first.first) <= tm)
+					if (p1.first.first + snk_spd + abs(d - p1.first.first) <= tm)
 					{
-						sum[p1.second] += (snk_spd) + abs(x2 - p1.first.first);
-						v_ans.push_back(make_pair(x2, make_pair(p1.first.first, p1.second)));
+						sum[p1.second] += (snk_spd) + abs(d - p1.first.first);
+						vec_ans.push_back(make_pair(d, make_pair(p1.first.first, p1.second)));
 					}
 					else
 					{
@@ -170,20 +170,20 @@ int main()
 						count[p1.second]--;
 					}
 				}
-				x2 += snk_spd;
+				d += snk_spd;
 			}
 			tmp_tm = p1.first.first;
 			j++;
 			global_queue.pop();
 		}
 
-		for (i = sz; i < v_ans.size(); i++)
+		for (i = sz; i < vec_ans.size(); i++)
 		{
-			if (lower_bound(v_ans.begin(), v_ans.end(), v_ans[i].second.first, compair) != v_ans.end())
+			if (lower_bound(vec_ans.begin(), vec_ans.end(), vec_ans[i].second.first, compair) != vec_ans.end())
 			{
-				int j = lower_bound(v_ans.begin(), v_ans.end(), v_ans[i].second.first, compair) - v_ans.begin();
+				int j = lower_bound(vec_ans.begin(), vec_ans.end(), vec_ans[i].second.first, compair) - vec_ans.begin();
 				if (abs(j - i) > sz)
-					packet_loss[v_ans[i].second.second]++;
+					packet_loss[vec_ans[i].second.second]++;
 			}
 		}
 
