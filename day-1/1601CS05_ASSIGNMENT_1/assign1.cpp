@@ -100,7 +100,6 @@ int main()
 		int k = stime * (double)src[i].sending_rate;
 		double src_spd = (double)pkt / (double)src[i].bandwidth;
 		double tmp2 = 0.0;
-		// Generation of one packet in one second.
 		double k1 = 1 / src[i].sending_rate;
 		arr[i] = k;
 
