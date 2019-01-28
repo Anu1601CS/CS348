@@ -36,8 +36,8 @@ int main()
 
 	double tm;
 	int i, sink_wid, packet;
-	cout<<"Sources: 3\n";
-	cout<<"Enter bandwidth of each source: \n";
+	cout<<"There are 3 sources.\n";
+	cout<<"Enter bandwidth of each source: ";
 	source tmp[num + 1];
 
 	for (i = 1; i <= num; i++)
@@ -49,9 +49,9 @@ int main()
 
 	cout << "Enter bandwidth of sink: ";
 	cin >> sink_wid;
-	cout << "Enter packet size ";
+	cout << "Enter packet size: ";
 	cin >> packet;
-	cout << "Enter simulation time:\n";
+	cout << "Enter simulation time: ";
 	cin >> tm;
 
 	double a;
@@ -61,8 +61,8 @@ int main()
 		double b;
 		b = (double)a;
 		tmp[1].sending_rate = b;
-		tmp[2].sending_rate = b + 0.5;
-		tmp[3].sending_rate = b + 1;
+		tmp[2].sending_rate = b + 0.25;
+		tmp[3].sending_rate = b + 0.75;
 
 		int count[num + 1];
 		double sum[num + 1];
@@ -75,7 +75,7 @@ int main()
 		int j = 1;
 		int packet_loss[num + 1];
 
-		memset(packet_loss, 0, sizeof(count));
+		memset(packet_loss, 0, sizeof(packet_loss));
 
 		double snk_spd = ((double)packet) / ((double)sink_wid);
 		for (i = 1; i <= num; i++)
@@ -119,7 +119,7 @@ int main()
 
 		double d = 0.0;
 		j = 1;
-		int sz = 100;
+		int size = 50;
 
 		double tmp_tm = 0.0;
 		vector<pair<double, pair<double, int>>> vec_ans;
@@ -177,12 +177,12 @@ int main()
 			global_queue.pop();
 		}
 
-		for (i = sz; i < vec_ans.size(); i++)
+		for (i = size; i < vec_ans.size(); i++)
 		{
 			if (lower_bound(vec_ans.begin(), vec_ans.end(), vec_ans[i].second.first, compair) != vec_ans.end())
 			{
 				int j = lower_bound(vec_ans.begin(), vec_ans.end(), vec_ans[i].second.first, compair) - vec_ans.begin();
-				if (abs(j - i) > sz)
+				if (abs(j - i) > size)
 					packet_loss[vec_ans[i].second.second]++;
 			}
 		}
@@ -213,17 +213,17 @@ int main()
 		}
 	}
 
-	cout<<"The average delay of the sources are:\n";
+	cout<<"The average delay of the sources are: ";
 
-	cout << "Source 1\n";
+	cout << "SRC 1: \n";
 	for (i = 0; i < vec1.size(); i++)
 		cout << vec1[i] << "\n";
 
-	cout << "Source 2\n";
+	cout << "SRC 2: \n";
 	for (i = 0; i < vec2.size(); i++)
 		cout << vec2[i] << "\n";
 
-	cout << "Source 3\n";
+	cout << "SRC 3: \n";
 	for (i = 0; i < vec3.size(); i++)
 		cout << vec3[i] << "\n";
 
