@@ -4,6 +4,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+priority_queue<pair<pair<double, double>, int>, vector<pair<pair<double, double>, int>>, greater<pair<pair<double, double>, int>>> global_queue;
+
 class source
 {
   public:
@@ -19,13 +21,11 @@ double cal(double rt, double r1)
 
 bool compair(const pair<double, pair<double, int>> &pair1, const double v)
 {
-	if (pair1.first < v)
-		return true;
-	else
+	if (pair1.first > v)
 		return false;
+	else
+		return true;
 }
-
-priority_queue<pair<pair<double, double>, int>, vector<pair<pair<double, double>, int>>, greater<pair<pair<double, double>, int>>> global_queue;
 
 int main()
 {
@@ -104,7 +104,7 @@ int main()
 					}
 					else
 					{
-						sum[i] += (abs(d - tmp1));
+						sum[i] += abs(d - tmp1);
 						global_queue.push(make_pair(make_pair(d + sp, sp + d - tmp1), i));
 					}
 					sum[i] += sp;
@@ -131,7 +131,7 @@ int main()
 			{
 				if (p1.first.first + snk_spd <= tm)
 				{
-					sum[p1.second] += (snk_spd);
+					sum[p1.second] += snk_spd;
 					vec_ans.push_back(make_pair(p1.first.first, make_pair(p1.first.first, p1.second)));
 				}
 				else
@@ -139,7 +139,7 @@ int main()
 					sum[p1.second] -= p1.first.second;
 					count[p1.second]--;
 				}
-				d = (snk_spd) + p1.first.first;
+				d = snk_spd + p1.first.first;
 			}
 			else
 			{
@@ -147,7 +147,7 @@ int main()
 				{
 					if (p1.first.first + snk_spd <= tm)
 					{
-						sum[p1.second] += (snk_spd);
+						sum[p1.second] += snk_spd;
 						vec_ans.push_back(make_pair(p1.first.first, make_pair(p1.first.first, p1.second)));
 					}
 					else
@@ -161,7 +161,7 @@ int main()
 				{
 					if (p1.first.first + snk_spd + abs(d - p1.first.first) <= tm)
 					{
-						sum[p1.second] += (snk_spd) + abs(d - p1.first.first);
+						sum[p1.second] += snk_spd + abs(d - p1.first.first);
 						vec_ans.push_back(make_pair(d, make_pair(p1.first.first, p1.second)));
 					}
 					else
@@ -213,13 +213,16 @@ int main()
 		}
 	}
 
-	printf("The average delay of the sources are:\n");
+	cout<<"The average delay of the sources are:\n";
+
 	cout << "Source 1\n";
 	for (i = 0; i < vec1.size(); i++)
 		cout << vec1[i] << "\n";
+
 	cout << "Source 2\n";
 	for (i = 0; i < vec2.size(); i++)
 		cout << vec2[i] << "\n";
+
 	cout << "Source 3\n";
 	for (i = 0; i < vec3.size(); i++)
 		cout << vec3[i] << "\n";
