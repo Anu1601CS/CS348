@@ -1,0 +1,1 @@
+this\nis\ntext\nfile: 34.txt
