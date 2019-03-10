@@ -4,6 +4,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+// Reaching time to switch and delay to switch
 priority_queue<pair<pair<double, double>, int>, vector<pair<pair<double, double>, int>>, greater<pair<pair<double, double>, int>>> global_queue;
 
 class source
@@ -64,6 +65,7 @@ int main()
 		tmp[2].sending_rate = b + 0.25;
 		tmp[3].sending_rate = b + 0.75;
 
+		// calculation of packet reach to sink
 		int count[num + 1];
 		double sum[num + 1];
 
@@ -89,6 +91,7 @@ int main()
 			{
 				if (d == 0.0)
 				{
+					// Reaching time to switch and delay to switch
 					global_queue.push(make_pair(make_pair(sp, sp), i));
 					d = sp;
 					sum[i] += sp;
@@ -132,6 +135,7 @@ int main()
 				if (p1.first.first + snk_spd <= tm)
 				{
 					sum[p1.second] += snk_spd;
+					// out from switch
 					vec_ans.push_back(make_pair(p1.first.first, make_pair(p1.first.first, p1.second)));
 				}
 				else
@@ -187,6 +191,7 @@ int main()
 			}
 		}
 
+		// Divide packet loss by number of packet out => packet loss rate.
 		for (i = 1; i <= num; i++)
 		{
 			if (i == 1)
