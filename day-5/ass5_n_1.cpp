@@ -17,13 +17,6 @@ class pkt
 	int id;
 };
 
-class event_occ
-{
-  public:
-	pkt p;
-	double time;
-};
-
 class cmp
 {
   public:
@@ -31,6 +24,13 @@ class cmp
 	{
 		return e1.time > e2.time;
 	}
+};
+
+class event_occ
+{
+  public:
+	pkt p;
+	double time;
 };
 
 int n;
