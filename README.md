@@ -1,2 +1,2 @@
 # CS348
-CS348
+Computer Networks lab assignments.
